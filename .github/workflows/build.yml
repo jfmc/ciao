@@ -101,30 +101,21 @@ jobs:
           mv Ciao-*.tar.gz $PBUNDLE
           # (keep pbundle name output)
           echo "::set-output name=pbundle::$PBUNDLE"
-      - name: Prepare release assets (docs)
+      - name: Prepare release assets (docs and site)
         if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'devenv')
-        id: prepare_release_docs
+        id: prepare_release_others
         run: |
           VERS=$(cat core/Manifest/GlobalVersion).$(cat core/Manifest/GlobalPatch)
           PBUNDLEDOCS=ciao-"$VERS"-docs.tar.gz
-          cd build
-          rm -rf doc/*.cachedoc
-          mkdir -p pbundle
-          tar -czf pbundle/$PBUNDLEDOCS doc
-          # (keep pbundledocs name output)
-          echo "::set-output name=pbundledocs::$PBUNDLEDOCS"
-      - name: Prepare release assets (site)
-        if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'devenv')
-        id: prepare_release_site
-        run: |
-          VERS=$(cat core/Manifest/GlobalVersion).$(cat core/Manifest/GlobalPatch)
           PBUNDLESITE=ciao-"$VERS"-site.tar.gz
           cd build
           rm -rf doc/*.cachedoc
           mkdir -p pbundle
+          tar -czf pbundle/$PBUNDLEDOCS doc
           tar -czf pbundle/$PBUNDLESITE site
-          # (keep pbundlesite name output)
-          echo "::set-output name=pbundlesite::$PBUNDLESITE
+          # (keep pbundledocs, pbundlesite name output)
+          echo "::set-output name=pbundledocs::$PBUNDLEDOCS"
+          echo "::set-output name=pbundlesite::$PBUNDLESITE"
       - name: Release (bin)
         uses: softprops/action-gh-release@v1
         if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'minciao')
@@ -133,20 +124,12 @@ jobs:
             ./build/pbundle/${{ steps.prepare_release_bin.outputs.pbundle }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Release (docs)
+      - name: Release (docs and site)
         uses: softprops/action-gh-release@v1
         if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'devenv')
         with:
           files: |         
-            ./build/pbundle/${{ steps.prepare_release_docs.outputs.pbundledocs }}
+            ./build/pbundle/${{ steps.prepare_release_others.outputs.pbundledocs }}
+            ./build/pbundle/${{ steps.prepare_release_others.outputs.pbundlesite }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Release (site)
-        uses: softprops/action-gh-release@v1
-        if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'devenv')
-        with:
-          files: |         
-            ./build/pbundle/${{ steps.prepare_release_site.outputs.pbundlesite }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
