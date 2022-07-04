@@ -71,8 +71,8 @@ jobs:
           case "${{ matrix.sys.inskind }}" in
               minciao)       EXTRAOPTS=""; DEVENV=no; WASM=no; ;;
               # devenv)        EXTRAOPTS=""; DEVENV=yes; WASM=yes; ;;
-              devenv)        EXTRAOPTS="--with-docs=no"; DEVENV=yes; WASM=yes; ;; # DEBUG
-              devenv-nodocs) EXTRAOPTS="--with-docs=no"; DEVENV=yes; WASM=no; ;;
+              devenv)        EXTRAOPTS="--with-docs=no --ciaopp:lite=yes"; DEVENV=yes; WASM=yes; ;; # DEBUG
+              devenv-nodocs) EXTRAOPTS="--with-docs=no --ciaopp:lite=yes"; DEVENV=yes; WASM=no; ;;
           esac
           if [ "${{ matrix.sys.arch }}" == "i686" ]; then
               ARCHOPTS="--core:m32=yes"
@@ -86,10 +86,12 @@ jobs:
           ./ciao-boot.sh configure --instype=local $ARCHOPTS $EXTRAOPTS
           ./ciao-boot.sh build
           ./ciao-boot.sh install
-          eval "$(build/bin/ciao-env --sh)" # update PATH, etc.
-          ciao_playground/build.sh
-          ciao custom_run website fetch_externals
-          ciao custom_run website dist
+          if [ $WASM == yes ]; then
+              eval "$(build/bin/ciao-env --sh)" # update PATH, etc.
+              ciao_playground/build.sh
+              ciao custom_run website fetch_externals
+              ciao custom_run website dist
+          fi
       # Release
       - name: Prepare release assets (bin)
         if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'minciao')
@@ -118,7 +120,7 @@ jobs:
           PBUNDLESITE=ciao-"$VERS"-site.tar.gz
           rm -f site/ciao/build/doc site/node_modules
           mkdir -p site/ciao/build/doc site/node_modules site/node_modules/monaco-editor
-          for m in doc/*.html; do cp -R "$m" site/ciao/build/doc; done
+          for m in doc/*.html; do [ -e "$m" ] || continue; cp -R "$m" site/ciao/build/doc; done
           cp -R ../third-party/3rd-npm/node_modules/mathjax site/node_modules
           cp -R ../third-party/3rd-npm/node_modules/monaco-editor/min site/node_modules/monaco-editor
           tar -czf pbundle/$PBUNDLESITE site
