@@ -110,6 +110,7 @@ jobs:
           PBUNDLEDOCS=ciao-"$VERS"-docs.tar.gz
           PBUNDLESITE=ciao-"$VERS"-site.tar.gz
           cd build
+          mkdir -p doc site
           rm -rf doc/*.cachedoc
           mkdir -p pbundle
           tar -czf pbundle/$PBUNDLEDOCS doc
