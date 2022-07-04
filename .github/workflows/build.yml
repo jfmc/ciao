@@ -107,13 +107,20 @@ jobs:
         id: prepare_release_others
         run: |
           VERS=$(cat core/Manifest/GlobalVersion).$(cat core/Manifest/GlobalPatch)
-          PBUNDLEDOCS=ciao-"$VERS"-docs.tar.gz
-          PBUNDLESITE=ciao-"$VERS"-site.tar.gz
           cd build
+          mkdir -p pbundle
+          # cleanup doc and pack
+          PBUNDLEDOCS=ciao-"$VERS"-docs.tar.gz
           mkdir -p doc site
           rm -rf doc/*.cachedoc
-          mkdir -p pbundle
           tar -czf pbundle/$PBUNDLEDOCS doc
+          # cleanup site and pack
+          PBUNDLESITE=ciao-"$VERS"-site.tar.gz
+          rm -f site/ciao/build/doc site/node_modules
+          mkdir -p site/ciao/build/doc site/node_modules site/node_modules/monaco-editor
+          cp -R doc/*.html site/ciao/build/doc
+          cp -R ../third-party/3rd-npm/node_modules/mathjax site/node_modules
+          cp -R ../third-party/3rd-npm/node_modules/monaco-editor/min site/node_modules/monaco-editor
           tar -czf pbundle/$PBUNDLESITE site
           # (keep pbundledocs, pbundlesite name output)
           echo "::set-output name=pbundledocs::$PBUNDLEDOCS"
