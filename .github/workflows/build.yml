@@ -71,7 +71,7 @@ jobs:
           case "${{ matrix.sys.inskind }}" in
               minciao)       EXTRAOPTS=""; DEVENV=no; WASM=no; ;;
               # devenv)        EXTRAOPTS=""; DEVENV=yes; WASM=yes; ;;
-              devenv)        EXTRAOPTS="--with-docs=no --ciaopp:lite=yes"; DEVENV=yes; WASM=yes; ;; # DEBUG
+              devenv)        EXTRAOPTS="--ciaopp:lite=yes"; DEVENV=yes; WASM=yes; ;;
               devenv-nodocs) EXTRAOPTS="--with-docs=no --ciaopp:lite=yes"; DEVENV=yes; WASM=no; ;;
           esac
           if [ "${{ matrix.sys.arch }}" == "i686" ]; then
