@@ -118,7 +118,7 @@ jobs:
           PBUNDLESITE=ciao-"$VERS"-site.tar.gz
           rm -f site/ciao/build/doc site/node_modules
           mkdir -p site/ciao/build/doc site/node_modules site/node_modules/monaco-editor
-          cp -R doc/*.html site/ciao/build/doc
+          for m in doc/*.html; do cp -R "$m" site/ciao/build/doc; done
           cp -R ../third-party/3rd-npm/node_modules/mathjax site/node_modules
           cp -R ../third-party/3rd-npm/node_modules/monaco-editor/min site/node_modules/monaco-editor
           tar -czf pbundle/$PBUNDLESITE site
