@@ -70,7 +70,8 @@ jobs:
         run: |
           case "${{ matrix.sys.inskind }}" in
               minciao)       EXTRAOPTS=""; DEVENV=no; WASM=no; ;;
-              devenv)        EXTRAOPTS=""; DEVENV=yes; WASM=yes; ;;
+              # devenv)        EXTRAOPTS=""; DEVENV=yes; WASM=yes; ;;
+              devenv)        EXTRAOPTS="--with-docs=no"; DEVENV=yes; WASM=yes; ;; # DEBUG
               devenv-nodocs) EXTRAOPTS="--with-docs=no"; DEVENV=yes; WASM=no; ;;
           esac
           if [ "${{ matrix.sys.arch }}" == "i686" ]; then
@@ -86,7 +87,7 @@ jobs:
           ./ciao-boot.sh build
           ./ciao-boot.sh install
           eval "$(build/bin/ciao-env --sh)" # update PATH, etc.
-          bndls/ciao_playground/build.sh
+          ciao_playground/build.sh
           ciao custom_run website fetch_externals
           ciao custom_run website dist
       # Release
