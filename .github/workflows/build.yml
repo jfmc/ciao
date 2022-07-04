@@ -20,12 +20,12 @@ jobs:
       matrix:
         sys:
           # Note: enable only one 'devenv' build (for docs release)
-          - { os: ubuntu-latest,  arch: x86_64, inskind: minciao }
+#          - { os: ubuntu-latest,  arch: x86_64, inskind: minciao }
           - { os: ubuntu-latest,  arch: x86_64, inskind: devenv }
-          - { os: ubuntu-latest,  arch: i686,   inskind: minciao }
-          - { os: macos-latest,   arch: x86_64, inskind: minciao }
-          - { os: macos-latest,   arch: x86_64, inskind: devenv-nodocs }
-          - { os: windows-2019,   arch: x86_64, inskind: minciao }
+#          - { os: ubuntu-latest,  arch: i686,   inskind: minciao }
+#          - { os: macos-latest,   arch: x86_64, inskind: minciao }
+#          - { os: macos-latest,   arch: x86_64, inskind: devenv-nodocs }
+#          - { os: windows-2019,   arch: x86_64, inskind: minciao }
 #          - { os: windows-2019,   arch: i686,   inskind: minciao }
 #       compiler:
 #         - { cc: gcc,   cxx: g++ }
@@ -56,20 +56,22 @@ jobs:
       - run: |
           sudo apt-get update && sudo apt-get install gcc-multilib g++-multilib libc6-i386 libc6-dev-i386
         if: (matrix.sys.os == 'ubuntu-latest' && matrix.sys.arch == 'i686')
-      # Additional setup for devenv (specially documentation generation)
+      # Additional setup for devenv: emacs and documentation generation
       - run: |
           sudo apt-get update && sudo apt-get install emacs-nox texlive-latex-base texlive-binaries ghostscript
           sudo sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
         if: (matrix.sys.os == 'ubuntu-latest' && matrix.sys.inskind == 'devenv')
+      # Additional setup for devenv: Emscripten
+      - uses: mymindstorm/setup-emsdk@v11
       # Checks-out repo under $GITHUB_WORKSPACE
       - uses: actions/checkout@v2
       # Build
       - name: Build
         run: |
           case "${{ matrix.sys.inskind }}" in
-              minciao)       EXTRAOPTS=""; DEVENV=no; ;;
-              devenv)        EXTRAOPTS=""; DEVENV=yes; ;;
-              devenv-nodocs) EXTRAOPTS="--with-docs=no"; DEVENV=yes; ;;
+              minciao)       EXTRAOPTS=""; DEVENV=no; WASM=no; ;;
+              devenv)        EXTRAOPTS=""; DEVENV=yes; WASM=yes; ;;
+              devenv-nodocs) EXTRAOPTS="--with-docs=no"; DEVENV=yes; WASM=no; ;;
           esac
           if [ "${{ matrix.sys.arch }}" == "i686" ]; then
               ARCHOPTS="--core:m32=yes"
@@ -79,9 +81,14 @@ jobs:
           # ARCHOPTS="${{ matrix.sys.archopts }} --core:custom_cc=$CC"
           ./ciao-boot.sh boot-build $ARCHOPTS
           if [ $DEVENV == yes ]; then ./ciao-boot.sh fetch devenv; fi
+          if [ $WASM == yes ]; then ./ciao-boot.sh fetch ciaowasm ciao_playground website; fi
           ./ciao-boot.sh configure --instype=local $ARCHOPTS $EXTRAOPTS
           ./ciao-boot.sh build
           ./ciao-boot.sh install
+          eval "$(build/bin/ciao-env --sh)" # update PATH, etc.
+          bndls/ciao_playground/build.sh
+          ciao custom_run website fetch_externals
+          ciao custom_run website dist
       # Release
       - name: Prepare release assets (bin)
         if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'minciao')
@@ -106,6 +113,18 @@ jobs:
           tar -czf pbundle/$PBUNDLEDOCS doc
           # (keep pbundledocs name output)
           echo "::set-output name=pbundledocs::$PBUNDLEDOCS"
+      - name: Prepare release assets (site)
+        if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'devenv')
+        id: prepare_release_site
+        run: |
+          VERS=$(cat core/Manifest/GlobalVersion).$(cat core/Manifest/GlobalPatch)
+          PBUNDLESITE=ciao-"$VERS"-site.tar.gz
+          cd build
+          rm -rf doc/*.cachedoc
+          mkdir -p pbundle
+          tar -czf pbundle/$PBUNDLESITE site
+          # (keep pbundlesite name output)
+          echo "::set-output name=pbundlesite::$PBUNDLESITE
       - name: Release (bin)
         uses: softprops/action-gh-release@v1
         if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'minciao')
@@ -120,6 +139,14 @@ jobs:
         with:
           files: |         
             ./build/pbundle/${{ steps.prepare_release_docs.outputs.pbundledocs }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release (site)
+        uses: softprops/action-gh-release@v1
+        if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'devenv')
+        with:
+          files: |         
+            ./build/pbundle/${{ steps.prepare_release_site.outputs.pbundlesite }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
