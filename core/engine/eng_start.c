@@ -130,8 +130,6 @@ static void open_exec_skip_stub(const char *file, FILE **stream) {
   engine_exit(1);
 }
 
-extern char *ciao_suffix;
-
 CBOOL__PROTO(load_boot, const char *boot_path, const char *exec_path) {
   FILE *qfile = NULL;
   
@@ -148,7 +146,7 @@ CBOOL__PROTO(load_boot, const char *boot_path, const char *exec_path) {
   } else {
     expand_file_name(boot_path,TRUE,source_path);
 #if defined(Win32)
-    int i = strlen(source_path)-4;
+    i = strlen(source_path)-4;
     if (i > 0 && strcmp(source_path+i,".bat") == 0){
       int j;
       for (j = 1; ciao_suffix[j] && (i+j < MAXPATHLEN); j++) {
@@ -196,6 +194,8 @@ void init_winsock2(void) {
 /* ------------------------------------------------------------------------- */
 
 extern char cwd[];
+
+extern char *ciao_suffix;
 
 void ciao_initcode(void); /* initialize foreign interface definitions */
 
@@ -279,31 +279,26 @@ void engine_init(const char *boot_path, const char *exec_path) {
   glb_init_each_time();
 }
 
-static bool_t get_execpath_(char *buffer, size_t size) {
+/* Get executable path (when argv[0] is not reliable) */
+char *get_execpath(void) {
+  char buffer[MAXPATHLEN+1];
+  size_t size = MAXPATHLEN+1;
 #if defined(LINUX)/*||defined(EMSCRIPTEN)*/
   ssize_t len;
-  len = readlink("/proc/self/exe", buffer, size);
-  return (len != -1);
+  if ((len = readlink("/proc/self/exe", buffer, size)) == -1) return NULL;
 #elif defined(DARWIN)
   uint32_t len = size;
-  return (_NSGetExecutablePath(buffer, &len) != -1);
+  if (_NSGetExecutablePath(buffer, &len) == -1) return NULL;
 #elif defined(_WIN32) || defined(_WIN64) /* MinGW */
-  return (GetModuleFileName(NULL, buffer, size) != 0);
+  if (GetModuleFileName(NULL, buffer, size) == 0) return NULL;
 #else
-  return FALSE;
+  return NULL;
   /* TODO: Missing support for other OS:
       - Solaris: getexecname()
       - FreeBSD: sysctl CTL_KERN KERN_PROC KERN_PROC_PATHNAME -1
       - BSD with procfs: readlink /proc/curproc/file
   */
 #endif
-}
-
-/* Get executable path (when argv[0] is not reliable) */
-char *get_execpath(void) {
-  char buffer[MAXPATHLEN+1];
-  size_t size = MAXPATHLEN+1;
-  if (!get_execpath_(buffer, size)) return NULL;
   return strdup(buffer);
 }
 
