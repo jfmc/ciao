@@ -86,7 +86,7 @@ jobs:
           # if [ $WASM == yes ]; then ./ciao-boot.sh fetch ciaowasm ciao_playground exfilter website; fi
           ./ciao-boot.sh configure --instype=local $ARCHOPTS $EXTRAOPTS
           ./ciao-boot.sh build --bin
-          ./ciao-boot.sh build --docs ciaopp
+          ./ciao-boot.sh build --docs lpdoc
           ./ciao-boot.sh install
           # if [ $WASM == yes ]; then
           #     eval "$(build/bin/ciao-env --sh)" # update PATH, etc.
