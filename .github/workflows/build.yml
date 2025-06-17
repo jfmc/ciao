@@ -20,12 +20,12 @@ jobs:
       matrix:
         sys:
           # Note: enable only one 'devenv' build (for docs release)
-          - { os: ubuntu-latest,  arch: x86_64, inskind: minciao }
+#          - { os: ubuntu-latest,  arch: x86_64, inskind: minciao }
           - { os: ubuntu-latest,  arch: x86_64, inskind: devenv }
 #          - { os: ubuntu-latest,  arch: i686,   inskind: minciao }
-          - { os: macos-latest,   arch: x86_64, inskind: minciao }
-          - { os: macos-latest,   arch: x86_64, inskind: devenv-nodocs }
-          - { os: windows-2025,   arch: x86_64, inskind: minciao }
+#          - { os: macos-latest,   arch: x86_64, inskind: minciao }
+#          - { os: macos-latest,   arch: x86_64, inskind: devenv-nodocs }
+#          - { os: windows-2025,   arch: x86_64, inskind: minciao }
 #          - { os: windows-2019,   arch: x86_64, inskind: minciao }
 #          - { os: windows-2019,   arch: i686,   inskind: minciao }
 #       compiler:
@@ -83,16 +83,17 @@ jobs:
           # ARCHOPTS="${{ matrix.sys.archopts }} --core:custom_cc=$CC"
           ./ciao-boot.sh boot-build $ARCHOPTS
           if [ $DEVENV == yes ]; then ./ciao-boot.sh fetch devenv; fi
-          if [ $WASM == yes ]; then ./ciao-boot.sh fetch ciaowasm ciao_playground exfilter website; fi
+          # if [ $WASM == yes ]; then ./ciao-boot.sh fetch ciaowasm ciao_playground exfilter website; fi
           ./ciao-boot.sh configure --instype=local $ARCHOPTS $EXTRAOPTS
-          ./ciao-boot.sh build
+          ./ciao-boot.sh build --bin
+          ./ciao-boot.sh build --docs ciaopp
           ./ciao-boot.sh install
-          if [ $WASM == yes ]; then
-              eval "$(build/bin/ciao-env --sh)" # update PATH, etc.
-              ciao_playground/build.sh
-              ciao custom_run website fetch_externals
-              ciao custom_run website dist
-          fi
+          # if [ $WASM == yes ]; then
+          #     eval "$(build/bin/ciao-env --sh)" # update PATH, etc.
+          #     ciao_playground/build.sh
+          #     ciao custom_run website fetch_externals
+          #     ciao custom_run website dist
+          # fi
       # Release
       - name: Prepare release assets (bin)
         if: (startsWith(github.ref, 'refs/tags/v') && matrix.sys.inskind == 'minciao')
