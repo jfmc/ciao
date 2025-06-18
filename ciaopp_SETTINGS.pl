@@ -180,7 +180,7 @@ ciaopp_testing :=
 ciaopp_testing := [].
 
 % TODO: port this manual
-allow_markdown := yes.
+allow_markdown := no.
 % syntax_highlight := no.
 
 %% TODO: these were enabled in internals manual
