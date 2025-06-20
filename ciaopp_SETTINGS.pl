@@ -16,12 +16,12 @@ doc_structure :=
 doc_usage :=
     part_usage-[
       % tut_quick_start,
-      auto_interface,
-      ciaopp,
-      ciaoppcl
+%      auto_interface,
+%      ciaopp,
+%      ciaoppcl,
 %      % release_tutorial,
 %      % 'tutorial',
-%      ~doc_domains,
+      ~doc_domains
 %      part_transformations,
 %      part_fixpoint,
 %      ~doc_other_commands
