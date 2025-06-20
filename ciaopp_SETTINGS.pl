@@ -42,7 +42,7 @@ doc_domain(fr_top). % :- dom_def(fr).
 doc_domain(gr). % :- dom_def(gr).
 doc_domain(lsign). % :- dom_def(lsign).
 doc_domain(lsigndiff). % :- dom_def(difflsign).
-:- if(defined(bug)).
+%:- if(defined(bug)).
 doc_domain(detplai). % :- dom_def(det).
 doc_domain(nfplai). % :- dom_def(nf).
 doc_domain(nonrel_intervals). % :- dom_def(nonrel_intervals).
@@ -59,6 +59,7 @@ doc_domain(sharefree_clique). % :- dom_def(sharefree_clique).
 doc_domain(sharefree_clique_def). % :- dom_def(sharefree_clique_def).
 doc_domain(sharefree_non_var). % :- dom_def(shfrnv).
 doc_domain(shareson). % :- dom_def(shareson).
+:- if(defined(bug)).
 doc_domain(sharing). % :- dom_def(share).
 doc_domain(sharing_amgu). % :- dom_def(share_amgu).
 doc_domain(sharing_clique). % :- dom_def(share_clique).
