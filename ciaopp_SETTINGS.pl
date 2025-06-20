@@ -7,7 +7,7 @@ output_name := 'ciaopp'.
 
 doc_structure :=
     ciaopp_ref_man-[
-%      ~doc_usage,
+      ~doc_usage
       % ~doc_assertions, % Note: assertions moved to alldocs
 %      ~doc_extensions,
 %      ~doc_internals
