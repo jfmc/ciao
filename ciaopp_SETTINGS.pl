@@ -42,6 +42,7 @@ doc_domain(fr_top). % :- dom_def(fr).
 doc_domain(gr). % :- dom_def(gr).
 doc_domain(lsign). % :- dom_def(lsign).
 doc_domain(lsigndiff). % :- dom_def(difflsign).
+:- if(defined(bug)).
 doc_domain(detplai). % :- dom_def(det).
 doc_domain(nfplai). % :- dom_def(nf).
 doc_domain(nonrel_intervals). % :- dom_def(nonrel_intervals).
@@ -85,6 +86,7 @@ doc_domain(java_cha). % :- dom_def(java_cha).
 %:- if(defined(has_ciaopp_bshare)).
 %doc_domain('bshare/bshare'). % :- dom_def(bshare).
 %:- endif.
+:- endif.
 
 doc_other_commands :=
     part_other_commands-[
