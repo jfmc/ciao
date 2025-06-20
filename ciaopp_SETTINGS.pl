@@ -18,13 +18,13 @@ doc_usage :=
       % tut_quick_start,
       auto_interface,
       ciaopp,
-      ciaoppcl,
-      % release_tutorial,
-      % 'tutorial',
-      ~doc_domains,
-      part_transformations,
-      part_fixpoint,
-      ~doc_other_commands
+      ciaoppcl
+%      % release_tutorial,
+%      % 'tutorial',
+%      ~doc_domains,
+%      part_transformations,
+%      part_fixpoint,
+%      ~doc_other_commands
     ].
 
 doc_domains := part_domains-(~findall(X,doc_domain(X))).
