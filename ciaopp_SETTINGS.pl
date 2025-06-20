@@ -59,7 +59,7 @@ doc_domain(sharefree_clique). % :- dom_def(sharefree_clique).
 doc_domain(sharefree_clique_def). % :- dom_def(sharefree_clique_def).
 doc_domain(sharefree_non_var). % :- dom_def(shfrnv).
 doc_domain(shareson). % :- dom_def(shareson).
-:- if(defined(bug)).
+%:- if(defined(bug)).
 doc_domain(sharing). % :- dom_def(share).
 doc_domain(sharing_amgu). % :- dom_def(share_amgu).
 doc_domain(sharing_clique). % :- dom_def(share_clique).
@@ -69,6 +69,7 @@ doc_domain(shfret). % :- dom_def(shfret).
 doc_domain(shfrlin_amgu). % :- dom_def(shfrlin_amgu).
 doc_domain(shfrson). % :- dom_def(shfrson).
 doc_domain(sondergaard). % :- dom_def(son).
+:- if(defined(bug)).
 doc_domain(svterms). % :- dom_def(svterms).
 doc_domain(termsd). % :- dom_def(terms).
 doc_domain(top_path_sharing). % :- dom_def(path).
