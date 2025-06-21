@@ -1108,7 +1108,7 @@ CBOOL__PROTO(bu2_univ, tagged_t term, tagged_t list) {
   }
 #endif
 
-#if defined(USE_BUILTIN_ENV)
+#if defined(USE_BUILTIN_ENVbug)
   /* compute arity first */
   arity = 0;
   HeapPush(G->heap_top,f);
