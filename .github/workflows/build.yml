@@ -59,8 +59,8 @@ jobs:
         if: (matrix.sys.os == 'ubuntu-latest' && matrix.sys.arch == 'i686')
       # Additional setup for devenv: emacs and documentation generation
       - run: |
-          sudo apt-get update && sudo apt-get install emacs-nox # ghostscript texlive-latex-base texlive-binaries 
-          sudo sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
+          # sudo apt-get update && sudo apt-get install emacs-nox # ghostscript texlive-latex-base texlive-binaries 
+          # sudo sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
         if: (matrix.sys.os == 'ubuntu-latest' && matrix.sys.inskind == 'devenv')
       # Additional setup for devenv: Emscripten
 #      - uses: mymindstorm/setup-emsdk@v14
