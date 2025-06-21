@@ -55,12 +55,12 @@ doc_domain(pd). % :- dom_def(pd).
 doc_domain(pdb). % :- dom_def(pdb).
 doc_domain(polyhedra). % :- dom_def(polyhedra).
 doc_domain(ptypes). % :- dom_def(ptypes).
-%doc_domain(sharefree). % :- dom_def(shfr).
-%doc_domain(sharefree_amgu). % :- dom_def(sharefree_amgu).
-%doc_domain(sharefree_clique). % :- dom_def(sharefree_clique).
-%doc_domain(sharefree_clique_def). % :- dom_def(sharefree_clique_def).
-%doc_domain(sharefree_non_var). % :- dom_def(shfrnv).
-%doc_domain(shareson). % :- dom_def(shareson).
+doc_domain(sharefree). % :- dom_def(shfr).
+doc_domain(sharefree_amgu). % :- dom_def(sharefree_amgu).
+doc_domain(sharefree_clique). % :- dom_def(sharefree_clique).
+doc_domain(sharefree_clique_def). % :- dom_def(sharefree_clique_def).
+doc_domain(sharefree_non_var). % :- dom_def(shfrnv).
+doc_domain(shareson). % :- dom_def(shareson).
 %:- if(defined(bug)).
 % BUG HERE BEGIN
 doc_domain(sharing). % :- dom_def(share).
