@@ -1030,7 +1030,7 @@ CBOOL__PROTO(bu2_univ, tagged_t term, tagged_t list) {
     });
   });
 
-#if defined(USE_BUILTIN_ENV)
+#if defined(USE_BUILTIN_ENVbugbug)
   HeapMargin_GC((arity+1)*(2*sizeof(tagged_t)), term, list);
 #endif
   cdr = atom_nil;
@@ -1096,7 +1096,7 @@ CBOOL__PROTO(bu2_univ, tagged_t term, tagged_t list) {
   }
 #endif
 
-#if defined(USE_BUILTIN_ENV)
+#if defined(USE_BUILTIN_ENVbugbug)
   /* compute arity first */
   arity = 0;
   HeapPush(G->heap_top,f);
