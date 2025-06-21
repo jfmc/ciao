@@ -51,8 +51,8 @@ doc_domain(nonrel_intervals). % :- dom_def(nonrel_intervals).
 :- if(defined(has_ciaopp_fpnum)).
 doc_domain(nonrel_fintervals). % :- dom_def(nonrel_fintervals).
 :- endif.
-%doc_domain(pd). % :- dom_def(pd).
-%doc_domain(pdb). % :- dom_def(pdb).
+doc_domain(pd). % :- dom_def(pd).
+doc_domain(pdb). % :- dom_def(pdb).
 %doc_domain(polyhedra). % :- dom_def(polyhedra).
 %doc_domain(ptypes). % :- dom_def(ptypes).
 doc_domain(sharefree). % :- dom_def(shfr).
