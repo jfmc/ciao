@@ -925,7 +925,7 @@ CBOOL__PROTO(bu3_functor, tagged_t term, tagged_t name, tagged_t arity) {
       if (!TaggedIsATM(name)) {
         BUILTIN_ERROR(ERR_type_error(atom), name, 2);
       }
-#if defined(USE_BUILTIN_ENV)
+#if defined(USE_BUILTIN_ENVbugbug)
       HeapMargin_GC((arity_n+1)*sizeof(tagged_t), term); /* (name is an atom, not collected) */
 #endif
       CBOOL__LASTUNIFY(CFUN__EVAL(make_structure, SetArity(name,arity_n)), term);
@@ -1030,7 +1030,7 @@ CBOOL__PROTO(bu2_univ, tagged_t term, tagged_t list) {
     });
   });
 
-#if defined(USE_BUILTIN_ENVbugbug)
+#if defined(USE_BUILTIN_ENV)
   HeapMargin_GC((arity+1)*(2*sizeof(tagged_t)), term, list);
 #endif
   cdr = atom_nil;
@@ -1096,7 +1096,7 @@ CBOOL__PROTO(bu2_univ, tagged_t term, tagged_t list) {
   }
 #endif
 
-#if defined(USE_BUILTIN_ENVbugbug)
+#if defined(USE_BUILTIN_ENV)
   /* compute arity first */
   arity = 0;
   HeapPush(G->heap_top,f);
