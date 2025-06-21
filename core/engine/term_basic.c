@@ -1108,10 +1108,11 @@ CBOOL__PROTO(bu2_univ, tagged_t term, tagged_t list) {
   }
 #endif
 
-#if defined(USE_BUILTIN_ENVbug)
+#if defined(USE_BUILTIN_ENV)
+// THE BUG IS HERE!!!
   /* compute arity first */
   arity = 0;
-  HeapPush(G->heap_top,f);
+  //HeapPush(G->heap_top,f);
   tagged_t p = cdr;
   while (TaggedIsLST(p) && arity<MAXARITY1) {
     DerefCdr(p,p);
