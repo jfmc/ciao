@@ -874,6 +874,18 @@ CFUN__PROTO(fu2_arg, tagged_t, tagged_t number, tagged_t term) {
 
 /*---------------------------------------------------------------*/
 
+/* Call explicit_heap_overflow if needed, where additional arguments are GC roots. */
+/* TODO:[JF] HeapOverflow_GC uses 2*REQ in HeapOverflow_GC for bignums, needed for term_basic.c? */
+#define HeapMargin_GCbug(REQ, ...) HeapMargin_GCbug_(REQ, VA_NARGS(__VA_ARGS__), (__VA_ARGS__)) 
+#define HeapMargin_GCbug_(REQ, GCLen, GCRegs) ({ \
+  ENSURE_LIVEINFO; \
+  intmach_t req_ = (REQ); \
+  if (HeapCharDifference(w->heap_top,Heap_Warn_GC)<req_) { \
+    fprintf(stderr, "(at %d) htop: %p, avail: %" PRIx64 ", req: %" PRIx64 "\n", __LINE__, w->heap_top, HeapCharDifference(w->heap_top,Heap_Warn_GC), req_); \
+    HeapOverflow_GC_(req_, GCLen, GCRegs); \
+  } \
+})
+
 #define USE_BU3_FUNCTOR_EXCEPTIONS 1 /* ISO compatibility */
 // TODO: deprecate old behavior
 
@@ -925,8 +937,8 @@ CBOOL__PROTO(bu3_functor, tagged_t term, tagged_t name, tagged_t arity) {
       if (!TaggedIsATM(name)) {
         BUILTIN_ERROR(ERR_type_error(atom), name, 2);
       }
-#if defined(USE_BUILTIN_ENVbugbug)
-      HeapMargin_GC((arity_n+1)*sizeof(tagged_t), term); /* (name is an atom, not collected) */
+#if defined(USE_BUILTIN_ENV)
+      HeapMargin_GCbug((arity_n+1)*sizeof(tagged_t), term); /* (name is an atom, not collected) */
 #endif
       CBOOL__LASTUNIFY(CFUN__EVAL(make_structure, SetArity(name,arity_n)), term);
     }
@@ -1030,8 +1042,8 @@ CBOOL__PROTO(bu2_univ, tagged_t term, tagged_t list) {
     });
   });
 
-#if defined(USE_BUILTIN_ENVbugbug)
-  HeapMargin_GC((arity+1)*(2*sizeof(tagged_t)), term, list);
+#if defined(USE_BUILTIN_ENV)
+  HeapMargin_GCbug((arity+1)*(2*sizeof(tagged_t)), term, list);
 #endif
   cdr = atom_nil;
   if (arity > 0) {
@@ -1096,7 +1108,7 @@ CBOOL__PROTO(bu2_univ, tagged_t term, tagged_t list) {
   }
 #endif
 
-#if defined(USE_BUILTIN_ENVbugbug)
+#if defined(USE_BUILTIN_ENV)
   /* compute arity first */
   arity = 0;
   HeapPush(G->heap_top,f);
@@ -1113,7 +1125,7 @@ CBOOL__PROTO(bu2_univ, tagged_t term, tagged_t list) {
     BUILTIN_ERROR(ERR_type_error(list), list, 2);
   }
 
-  HeapMargin_GC((arity+1)*sizeof(tagged_t));
+  HeapMargin_GCbug((arity+1)*sizeof(tagged_t));
 
   f = SetArity(f,arity);
   argp = G->heap_top;
